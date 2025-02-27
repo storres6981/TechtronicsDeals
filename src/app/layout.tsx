@@ -25,7 +25,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={geist.className}>
       <body>
-        <ClientLayout>{children}</ClientLayout>
+        <Providers>
+          <ClientLayout>{children}</ClientLayout>
+        </Providers>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
 import { Deal } from '@prisma/client';
+import puppeteer, { Browser, Page } from 'puppeteer';
 
 interface KouponDeal {
   id: string;
@@ -13,18 +14,23 @@ interface KouponDeal {
 }
 
 export async function scrapeKouponDeals(): Promise<Deal[]> {
-  let browser;
+  let browser: Browser | null = null;
+  let page: Page | null = null;
+
   try {
     browser = await puppeteer.launch({ 
       headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      timeout: 60000 // 60 seconds browser launch timeout
     });
-    const page = await browser.newPage();
 
-  try {
+    page = await browser.newPage();
+    await page.setDefaultNavigationTimeout(30000); // 30 seconds navigation timeout
+    await page.setDefaultTimeout(10000); // 10 seconds default timeout for other operations
+
     // Navigate to Koupon.ai deals page
     await page.goto('https://koupon.ai/deals', {
-      waitUntil: 'networkidle0',
+      waitUntil: 'networkidle0'
     });
 
     // Wait for deals to load
@@ -37,8 +43,8 @@ export async function scrapeKouponDeals(): Promise<Deal[]> {
         const id = item.getAttribute('data-deal-id') || '';
         const title = item.querySelector('.deal-title')?.textContent?.trim() || '';
         const description = item.querySelector('.deal-description')?.textContent?.trim() || '';
-        const price = parseFloat(item.querySelector('.current-price')?.textContent?.replace('$', '') || '0');
-        const originalPrice = parseFloat(item.querySelector('.original-price')?.textContent?.replace('$', '') || '0');
+        const price = parseFloat(item.querySelector('.current-price')?.textContent?.replace(/[^0-9.]/g, '') || '0');
+        const originalPrice = parseFloat(item.querySelector('.original-price')?.textContent?.replace(/[^0-9.]/g, '') || '0');
         const imageUrl = item.querySelector('.deal-image')?.getAttribute('src') || '';
         const productUrl = item.querySelector('.deal-link')?.getAttribute('href') || '';
         const couponCode = item.querySelector('.coupon-code')?.textContent?.trim() || null;
@@ -58,6 +64,11 @@ export async function scrapeKouponDeals(): Promise<Deal[]> {
       });
     });
 
+    if (!deals.length) {
+      console.warn('No deals found on Koupon.ai');
+      return [];
+    }
+
     // Transform to Deal[]
     return deals.map(deal => ({
       id: `koupon-${deal.id}`,
@@ -74,13 +85,18 @@ export async function scrapeKouponDeals(): Promise<Deal[]> {
       updatedAt: new Date()
     }));
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error scraping Koupon.ai deals:', error);
+    if (error.name === 'TimeoutError' || error.message.includes('timeout')) {
+      throw new Error('Failed to load Koupon.ai deals: Operation timed out');
+    }
     throw new Error(`Failed to scrape Koupon.ai deals: ${error.message}`);
   } finally {
+    if (page) {
+      await page.close().catch(console.error);
+    }
     if (browser) {
-      await browser.close();
+      await browser.close().catch(console.error);
     }
   }
-}
 }
