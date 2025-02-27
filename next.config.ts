@@ -3,7 +3,6 @@ import { NextConfig } from 'next';
 const config: NextConfig = {
   output: 'export',
   images: {
-    unoptimized: true,
     domains: ['images-na.ssl-images-amazon.com', 'i.imgur.com'],
     remotePatterns: [
       {
@@ -11,14 +10,11 @@ const config: NextConfig = {
         hostname: '**',
       },
     ],
+    unoptimized: true,
   },
-  basePath: process.env.NODE_ENV === 'production' ? '/techtronicsdeals' : '',
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/techtronicsdeals/' : '',
+  basePath: process.env.NODE_ENV === 'production' ? '/TechtronicsDeals' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/TechtronicsDeals/' : '',
   trailingSlash: true,
-  distDir: 'out',
-  experimental: {
-    appDir: true
-  }
 };
 
 export default config;

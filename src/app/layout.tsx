@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
@@ -18,14 +17,11 @@ export const metadata: Metadata = {
   description: "Find the best deals on electronics, gadgets, and tech accessories with exclusive coupons and discounts.",
 };
 
-=======
->>>>>>> 868642809a379b7c1c3f052c9a08ed97544724b5
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-<<<<<<< HEAD
   return (
     <html lang="en" className={geist.className}>
       <body>
@@ -36,7 +32,3 @@ export default function RootLayout({
     </html>
   );
 }
-=======
-  return <ClientLayout>{children}</ClientLayout>;
-} // Remove the extra closing brace
->>>>>>> 868642809a379b7c1c3f052c9a08ed97544724b5
