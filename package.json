@@ -3,22 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "sync-deals": "node scripts/sync-deals.js"
+    "sync-deals": "node scripts/sync-deals.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.8.0",
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^6.4.1",
     "date-fns": "^4.1.0",
+    "gh-pages": "^6.3.0",
     "mongodb": "^6.13.1",
     "next": "15.2.0",
-    "next-auth": "^4.24.11",
+    "next-auth": "^4.24.7",
+    "paapi5-nodejs-sdk": "^1.1.0",
     "prisma": "^6.4.1",
-    "puppeteer": "^21.10.0",
+    "puppeteer": "^24.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2"

@@ -1,4 +1,8 @@
+import { config } from 'dotenv';
 import { searchAmazonProducts } from '../src/lib/services/amazonApiService.js';
+
+// Load environment variables
+config();
 
 async function testAmazonApi() {
   try {

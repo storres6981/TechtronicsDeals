@@ -36,6 +36,14 @@ function buildCanonicalRequest(method, uri, queryParams, headers, payload) {
 }
 
 export async function searchAmazonProducts(keyword) {
+  const accessKey = process.env.AMAZON_ACCESS_KEY;
+  const secretKey = process.env.AMAZON_SECRET_KEY;
+  const storeId = process.env.AMAZON_STORE_ID;
+
+  if (!accessKey || !secretKey || !storeId) {
+    throw new Error('Missing required Amazon API credentials. Please check your environment variables.');
+  }
+
   const timestamp = new Date().toISOString().replace(/[:-]|\.\d{3}/g, '');
   const date = timestamp.slice(0, 8);
 
@@ -47,12 +55,21 @@ export async function searchAmazonProducts(keyword) {
     'x-amz-target': 'com.amazon.paapi5.v1.ProductAdvertisingAPIv1.SearchItems'
   };
 
+  console.log('Using Amazon API credentials:', {
+    accessKey: AMAZON_ACCESS_KEY,
+    storeId: AMAZON_STORE_ID,
+    region: AMAZON_REGION
+  });
   const payload = JSON.stringify({
     'Keywords': keyword,
     'Resources': [
       'ItemInfo.Title',
       'Offers.Listings.Price',
-      'Images.Primary.Large'
+      'Offers.Listings.SavingBasis',
+      'Offers.Listings.DeliveryInfo.IsPrimeEligible',
+      'Images.Primary.Large',
+      'CustomerReviews.Count',
+      'CustomerReviews.StarRating'
     ],
     'PartnerTag': AMAZON_STORE_ID,
     'PartnerType': 'Associates',
@@ -88,6 +105,11 @@ export async function searchAmazonProducts(keyword) {
   ].join(', ');
 
   return new Promise((resolve, reject) => {
+    console.log('Sending request to Amazon API with credentials:', {
+      accessKey: accessKey.substring(0, 5) + '...',
+      storeId,
+      region: AMAZON_REGION
+    });
     const request = https.request({
       hostname: AMAZON_HOST,
       path: AMAZON_URI,

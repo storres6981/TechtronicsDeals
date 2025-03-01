@@ -1,3 +1,5 @@
+'use client';
+
 import { PrismaClient, Deal } from '@prisma/client';
 import { scrapeAmazonDeals } from '../scrapers/amazon';
 import { scrapeKouponDeals } from '../scrapers/koupon';
