@@ -6,6 +6,7 @@ const nextConfig = {
     domains: ['m.media-amazon.com', 'images-na.ssl-images-amazon.com']
   },
   basePath: process.env.NODE_ENV === 'production' ? '/TechtronicsDeals' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/TechtronicsDeals/' : '',
   trailingSlash: true,
   env: {
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,

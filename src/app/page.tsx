@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { AmazonProduct } from './components/AmazonProduct';
+import type { AmazonProductProps } from './components/AmazonProduct';
 
 export default async function Home() {
   try {
@@ -13,14 +14,14 @@ export default async function Home() {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const products = await response.json();
+    const products = await response.json() as AmazonProductProps[];
 
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Featured Tech Deals</h1>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {products.map((product) => (
+          {products.map((product: AmazonProductProps) => (
             <AmazonProduct
               key={product.asin}
               {...product}

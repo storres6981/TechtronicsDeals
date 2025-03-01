@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { formatPrice } from '@/lib/utils/format';
 
-interface AmazonProductProps {
+export interface AmazonProductProps {
   title: string;
   description: string;
   price: number;
